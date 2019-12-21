@@ -136,8 +136,8 @@ def printTopLanguages(topLanguages, languages):
             print("%d. Language: React JSX: %d hours" %
                   (i + 1, int(minutesToHours(secondsToMinutes(languages[lang])))))
         else:
-            print("%d. Language: %s: %d hours" % (i + 1, lang,
-                                                  int(minutesToHours(secondsToMinutes(languages[lang])))))
+            print("%d. Language: %s: %.1f hours" % (i + 1, lang,
+                                                  minutesToHours(secondsToMinutes(languages[lang]))))
 
 
 def getProjects():
@@ -175,8 +175,8 @@ def getTopProjects(n, projects):
 def printTopProjects(topProjects, projects):
     """Print out the top projects to the console"""
     for (i, proj) in enumerate(topProjects):
-        print("%d. Project: %s: %d hours" % (i + 1, proj,
-                                             int(minutesToHours(secondsToMinutes(projects[proj])))))
+        print("%d. Project: %s: %.1f hours" % (i + 1, proj,
+                                             minutesToHours(secondsToMinutes(projects[proj]))))
 
 
 def writeToStatistics():
@@ -211,14 +211,14 @@ def writeToStatistics():
             f.write("%d. Language: React JSX: %d hours\n" % (
                 i + 1, int(minutesToHours(secondsToMinutes(languages[lang])))))
         else:
-            f.write("%d. Language: %s: %d hours\n" % (i + 1, lang,
-                                                      int(minutesToHours(secondsToMinutes(languages[lang])))))
+            f.write("%d. Language: %s: %.1f hours\n" % (i + 1, lang,
+                                                      minutesToHours(secondsToMinutes(languages[lang]))))
     f.write("\n")
     f.write("Top %d Projects:\n" % n_proj)
     topProj = getTopProjects(n_proj, projects)
     for (i, proj) in enumerate(topProj):
-        f.write("%d. Project: %s: %d hours\n" % (i + 1, proj,
-                                                 int(minutesToHours(secondsToMinutes(projects[proj])))))
+        f.write("%d. Project: %s: %.1f hours\n" % (i + 1, proj,
+                                                 minutesToHours(secondsToMinutes(projects[proj]))))
     f.close()
 
 
@@ -234,7 +234,7 @@ def printStatisticsToConsole():
     average = minutes / days
     year = 2019
     n_lang = 10
-    n_proj = 10
+    n_proj = 20
 
     print("Statistics:")
     print()
