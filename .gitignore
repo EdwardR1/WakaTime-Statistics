@@ -1,0 +1,4 @@
+codes.json
+data/*.json
+__pycache__
+statistics.txt
