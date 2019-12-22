@@ -1,6 +1,10 @@
-import auth
-import parse
+from auth import auth, updateCurrentMonth
+from parse import main as parse
 
+PULL_DATA = 1
+UPDATE_CURRENT_MONTH = 2
+PARSE_DATA = 3
+EXIT_VAL = -1
 
 def isValid(action):
     """Check if the action inputted is valid"""
@@ -13,19 +17,18 @@ def isValid(action):
 def printMenu():
     """Print out the menu of options and get a user choice"""
     QUIT = "Q"
-    PULL_DATA = 1
-    PARSE_DATA = 2
-    MAX = 2
     MIN = 1
+    MAX = 3
     print("Options are:")
     print("[%d]: Authenticate and Pull Data" % PULL_DATA)
+    print("[%d]: Update only current month data" % UPDATE_CURRENT_MONTH)
     print("[%d]: Parse and Print out Data" % PARSE_DATA)
     print()
     print("[%s]: Quit" % QUIT)
     selection = input()
     if(selection.upper() == QUIT):
         print("Closing!")
-        return -1
+        return EXIT_VAL
     elif(isValid(selection) < MIN or isValid(selection) > MAX):
         print("Invalid choice! Try again!")
         printMenu()
@@ -39,11 +42,13 @@ def main():
     Run parse.main() if choice == 2
     """
     action = printMenu()
-    while(action != -1):
-        if(action == 1):
-            auth.main()
-        elif(action == 2):
-            parse.main()
+    while(action != EXIT_VAL):
+        if(action == PULL_DATA):
+            auth()
+        elif(action == UPDATE_CURRENT_MONTH):
+            updateCurrentMonth()
+        elif(action == PARSE_DATA):
+            parse()
         action = printMenu()
     print("Exited!")
 

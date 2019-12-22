@@ -36,7 +36,7 @@ def writeToFile(month, dataStream):
 
 
 def auth():
-    """Authenticate the information and send it to the right places
+    """Authenticate the information and update all values
     """
     if sys.version_info[0] == 3:
         raw_input = input
@@ -97,9 +97,65 @@ def auth():
         writeToFile(i, monthData)
 
 
-def main():
-    auth()
+def updateCurrentMonth():
+    """
+    Authenticate the information and update only the current month
+    """
+    if sys.version_info[0] == 3:
+        raw_input = input
 
+    codes = getCodes("codes.json")
+    if(codes == -1):
+        print("Failed!")
+        exit(1)
+    client_id = codes["client_id"]
+    secret = codes["secret"]
+    api_key = codes["api_key"]
 
-if(__name__ == "__main__"):
-    main()
+    service = OAuth2Service(
+        client_id=client_id,
+        client_secret=secret,
+        name='wakatime',
+        authorize_url='https://wakatime.com/oauth/authorize',
+        access_token_url='https://wakatime.com/oauth/token',
+        base_url='https://wakatime.com/api/v1/')
+
+    redirect_uri = 'https://wakatime.com/oauth/test'
+    state = hashlib.sha1(os.urandom(40)).hexdigest()
+    params = {'scope': 'email,read_stats',
+              'response_type': 'code',
+              'state': state,
+              'redirect_uri': redirect_uri}
+
+    url = service.get_authorize_url(**params)
+
+    print('**** Visit this url in your browser ****'.format(url=url))
+    print('*' * 80)
+    print(url)
+    print('*' * 80)
+    print('**** After clicking Authorize, paste code here and press Enter ****')
+    code = raw_input('Enter code from url: ')
+
+    # Make sure returned state has not changed for security reasons, and exchange
+    # code for an Access Token.
+    headers = {'Accept': 'application/x-www-form-urlencoded'}
+    print('Getting an access token...')
+    session = service.get_auth_session(headers=headers,
+                                       data={'code': code,
+                                             'grant_type': 'authorization_code',
+                                             'redirect_uri': redirect_uri})
+
+    print('Getting current user from API...')
+    user = session.get('users/current').json()
+    print('Authenticated via OAuth as {0}'.format(user['data']['email']))
+    print("Getting user's coding stats from API...")
+
+    year = getDateDetails()["year"]
+    currentMonth = int(getDateDetails()["month"])
+    monthData = {}
+    # for i in range(1, currentMonth + 1):
+    i = currentMonth
+    jsonObj = session.get("users/current/summaries?start=%s&end=%s&api_key=%s" % (monthDates(i, int(year))["start"], monthDates(i, int(year))["end"], api_key))
+    monthData = jsonObj.text
+    writeToFile(i, monthData)
+
