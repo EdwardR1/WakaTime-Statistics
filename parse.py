@@ -190,7 +190,7 @@ def writeToStatistics():
     minutes = secondsToMinutes(time)
     days = getDateRange(combined["start"], combined['end'])
     average = minutes / days
-    year = 2019
+    year = 2020
     n_lang = 10
     n_proj = 10
 
@@ -232,7 +232,7 @@ def printStatisticsToConsole():
     minutes = secondsToMinutes(time)
     days = getDateRange(combined["start"], combined['end'])
     average = minutes / days
-    year = 2019
+    year = 2020
     n_lang = 20
     n_proj = 20
 
