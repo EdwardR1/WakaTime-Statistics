@@ -98,3 +98,12 @@ def sortMonths(monthsList):
         monthName = numToMonth(i)
         sortedMonths.append(monthName)
     return sortedMonths
+
+
+def formatDate(string):
+    """ Format the date as a proper date string """
+    sub = string.split("-")
+    year = sub[0]
+    month = int(sub[1])
+    date = sub[2]
+    return f"{numToMonth(month).capitalize()} {date}, {year}"

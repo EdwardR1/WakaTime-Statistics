@@ -1,7 +1,7 @@
 import json
 import datetime
 import os
-from dateinformation import numToMonth, getMonths, sortMonths
+from dateinformation import numToMonth, getMonths, sortMonths, formatDate
 from timeconversion import convertToTimeValue, secondsToMinutes, minutesToHours
 
 dirName = os.path.dirname(__file__)
@@ -25,6 +25,19 @@ def getTotalTime(dict):
     for i in range(len(dict["data"])):
         time += dict["data"][i]["grand_total"]["total_seconds"]
     return time
+
+
+def getLongestDay(combined):
+    """ Find the longest day """
+    maxSeconds = 0
+    date = ""
+    maxTime = ""
+    for data in combined["data"]:
+        if(data['grand_total']['total_seconds'] > maxSeconds):
+            maxSeconds = data['grand_total']['total_seconds']
+            date = data['range']['date']
+            maxTime = data['grand_total']['text']
+    return [date, maxTime]
 
 
 def calcLanguageTotals(combined):
@@ -137,7 +150,7 @@ def printTopLanguages(topLanguages, languages):
                   (i + 1, int(minutesToHours(secondsToMinutes(languages[lang])))))
         else:
             print("%d. %s: %.1f hours" % (i + 1, lang,
-                                                  minutesToHours(secondsToMinutes(languages[lang]))))
+                                          minutesToHours(secondsToMinutes(languages[lang]))))
 
 
 def getProjects():
@@ -176,7 +189,7 @@ def printTopProjects(topProjects, projects):
     """Print out the top projects to the console"""
     for (i, proj) in enumerate(topProjects):
         print("%d. %s: %.1f hours" % (i + 1, proj,
-                                             minutesToHours(secondsToMinutes(projects[proj]))))
+                                      minutesToHours(secondsToMinutes(projects[proj]))))
 
 
 def writeToStatistics():
@@ -189,6 +202,7 @@ def writeToStatistics():
     hours = (minutesToHours(secondsToMinutes(time)))
     minutes = secondsToMinutes(time)
     days = getDateRange(combined["start"], combined['end'])
+    longestDate = getLongestDay(combined)
     average = minutes / days
     year = 2020
     n_lang = 10
@@ -196,6 +210,10 @@ def writeToStatistics():
 
     f.write("Statistics:\n")
     f.write('\n')
+    f.write("Longest Day:\n")
+    f.write(
+        f"Longest Day Occurred on: {formatDate(longestDate[0])} with a duration of {longestDate[1]}\n\n")
+
     f.write("Averages:\n")
     f.write("Total number of hours spent coding in %d: %.1f hours\n" %
             (year, hours))
@@ -212,13 +230,13 @@ def writeToStatistics():
                 i + 1, int(minutesToHours(secondsToMinutes(languages[lang])))))
         else:
             f.write("%d. %s: %.1f hours\n" % (i + 1, lang,
-                                                      minutesToHours(secondsToMinutes(languages[lang]))))
+                                              minutesToHours(secondsToMinutes(languages[lang]))))
     f.write("\n")
     f.write("Top %d Projects:\n" % n_proj)
     topProj = getTopProjects(n_proj, projects)
     for (i, proj) in enumerate(topProj):
         f.write("%d. %s: %.1f hours\n" % (i + 1, proj,
-                                                 minutesToHours(secondsToMinutes(projects[proj]))))
+                                          minutesToHours(secondsToMinutes(projects[proj]))))
     f.close()
 
 
@@ -231,6 +249,7 @@ def printStatisticsToConsole():
     hours = (minutesToHours(secondsToMinutes(time)))
     minutes = secondsToMinutes(time)
     days = getDateRange(combined["start"], combined['end'])
+    longestDate = getLongestDay(combined)
     average = minutes / days
     year = 2020
     n_lang = 20
@@ -238,6 +257,10 @@ def printStatisticsToConsole():
 
     print("Statistics:")
     print()
+    print("Longest Day:")
+    print(
+        f"Longest Day Occurred on: {formatDate(longestDate[0])} with a duration of {longestDate[1]}\n")
+
     print("Averages:")
     print("Total number of hours spent coding in %d: %.1f hour" % (year, hours))
     print("Average number of minutes per day spent coding in %d: %.1f minute" %
