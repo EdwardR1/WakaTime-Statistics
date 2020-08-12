@@ -29,9 +29,11 @@ def getCodes(codesFile):
 
 def writeToFile(month, dataStream):
     """ Write the output to a file with the name of the month"""
-    f = open("data/%s.json" % numToMonth(month), "w")
-    f.write(dataStream)
-    f.close()
+    if(not os.path.exists("data/")):
+      os.makedirs("data/")
+    with open(f"data/{numToMonth(month)}.json", "w") as f:
+        f.write(dataStream)
+        f.close()
     print(numToMonth(month).capitalize(), "written")
 
 
@@ -106,7 +108,7 @@ def updateCurrentMonth():
 
     codes = getCodes("codes.json")
     if(codes == -1):
-        print("Failed!")
+        print("Failed! Make sure a codes.json file exists with the client_id, secret, and api_keys included.")
         exit(1)
     client_id = codes["client_id"]
     secret = codes["secret"]
